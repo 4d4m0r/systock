@@ -13,14 +13,17 @@ class UserController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    // Método para retornar todos os usuários
     public function index()
     {
         $users = User::all();
         return response()->json($users);
     }
 
+    // Método para criar um novo usuário
     public function store(Request $request)
     {
+        // Valida os dados recebidos do request
         $request->validate([
             'name' => 'required|string|max:255|unique:users,name',
             'cpf' => 'required|string|max:14|unique:users,cpf',
@@ -28,6 +31,7 @@ class UserController extends BaseController
             'password' => 'required|string|min:8',
         ]);
 
+        // Cria um novo usuário com os dados recebidos
         $user = new User([
             'name' => $request->get('name'),
             'cpf' => $request->get('cpf'),
@@ -40,12 +44,13 @@ class UserController extends BaseController
         return response()->json($user, 201);
     }
 
+    // Método para mostrar os detalhes de um usuário específico
     public function show(User $user)
     {
-        // return JSON response with the player
         return response()->json($user);
     }
 
+    // Método para atualizar os dados de um usuário existente
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -67,6 +72,7 @@ class UserController extends BaseController
         return response()->json($user);
     }
 
+    // Método para deletar um usuário
     public function delete(User $user)
     {
         $user->delete();
