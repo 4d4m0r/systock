@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <h2>Criar Usuário</h2>
     <v-row>
       <v-col>
         <v-form ref="form" v-model="valid">
@@ -25,17 +26,27 @@ export default {
       email: '',
       password: '',
       error: '',
-      nameRules: [(v) => !!v || 'Nome é requerido.'],
-      cpfRules: [(v) => !!v || 'CPF é requerido.'],
-      emailRules: [
-        (v) => !!v || 'Email é requerido.',
-        (v) => /.+@.+/.test(v) || 'Insira um email válido.',
+      nameRules: [
+        v => !!v || 'Nome é requerido.',
+        v => (v && v.length <= 255) || 'Nome deve ter no máximo 255 caracteres.',
       ],
-      passwordRules: [(v) => !!v || 'Senha é requerida.'],
+      cpfRules: [
+        v => !!v || 'CPF é requerido.',
+        v => /^[0-9]{11}$/.test(v) || 'CPF deve ter exatamente 11 dígitos numéricos.',
+      ],
+      emailRules: [
+        v => !!v || 'Email é requerido.',
+        v => /.+@.+/.test(v) || 'Insira um email válido.',
+      ],
+      passwordRules: [
+        v => !!v || 'Senha é requerida.',
+        v => (v && v.length >= 6) || 'Senha deve ter pelo menos 6 caracteres.',
+      ],
     };
   },
   methods: {
     submit() {
+      this.error = '';
       this.axios.post('/users', {
         name: this.name,
         cpf: this.cpf,
@@ -55,7 +66,7 @@ export default {
     },
     formatErrors(errors) {
       return Object.values(errors).flat().join(' ');
-    }
+    },
   },
 };
 </script>

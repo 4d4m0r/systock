@@ -2,11 +2,13 @@
   <v-container>
     <v-row>
       <v-col>
+        <h2>Lista de Usuários</h2>
         <v-btn color="primary" @click="createUser">Criar Usuário</v-btn>
         <v-data-table
           :headers="headers"
           :items="users"
           class="elevation-1"
+          v-if="users.length > 0"
         >
           <template v-slot:item.actions="{ item }">
             <v-icon small @click="editUser(item)">mdi-pencil</v-icon>
@@ -14,6 +16,9 @@
             <v-icon small @click="showUser(item.id)">mdi-eye</v-icon>
           </template>
         </v-data-table>
+        <div v-else>
+          <p>Nenhum usuário cadastrado.</p>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -57,8 +62,8 @@ export default {
           console.error(error);
         });
     },
-    showUser(id){
-        this.$router.push(`/show/${id}`);
+    showUser(id) {
+      this.$router.push(`/show/${id}`);
     }
   },
   mounted() {

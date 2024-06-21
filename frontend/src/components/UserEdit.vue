@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <h2>Editar Usuário</h2>
     <v-row>
       <v-col>
         <v-form ref="form" v-model="valid">
@@ -8,6 +9,9 @@
           <v-text-field v-model="email" :rules="emailRules" label="Email" required></v-text-field>
           <v-text-field v-model="password" :rules="passwordRules" label="Senha" type="password"></v-text-field>
           <v-btn :disabled="!valid" color="primary" @click="submit">Enviar</v-btn>
+          <v-overlay :value="loading">
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
         </v-form>
         <v-alert v-if="error" type="error">{{ error }}</v-alert>
       </v-col>
@@ -20,6 +24,7 @@ export default {
   data() {
     return {
       valid: false,
+      loading: false,
       name: '',
       cpf: '',
       email: '',
@@ -31,7 +36,7 @@ export default {
         (v) => !!v || 'Email é requerido.',
         (v) => /.+@.+/.test(v) || 'Insira um email válido.',
       ],
-      passwordRules: [(v) => !!v || 'Senha é requerida.'],
+      passwordRules: [],
     };
   },
   created() {
@@ -40,15 +45,18 @@ export default {
   methods: {
     fetchUser() {
       const id = this.$route.params.id;
+      this.loading = true;
       this.axios.get(`/users/${id}`)
         .then(response => {
           this.name = response.data.name;
           this.cpf = response.data.cpf;
           this.email = response.data.email;
-          this.password = response.data.password;
+          this.loading = false;
         })
         .catch(error => {
           console.error(error);
+          this.loading = false;
+          this.error = 'Erro ao buscar o usuário.';
         });
     },
     submit() {

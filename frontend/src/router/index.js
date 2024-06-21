@@ -24,7 +24,7 @@ const routes = [
     path: '/show/:id',
     name: 'UserShow',
     component: UserShow,
-  },
+  }
 ];
 
 const router = createRouter({
